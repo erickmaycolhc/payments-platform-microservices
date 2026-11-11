@@ -1,0 +1,77 @@
+services:
+  # 1 DB Account Service
+  postgres-accounts:
+    image: postgres:16-alpine
+    container_name: accounts_db
+    environment:
+      POSTGRES_DB: accounts_db
+      POSTGRES_USER: ${DB_USER:?Define DB_USER in .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD in .env}
+    ports: [ "5433:5432" ]
+    volumes: [ pgdata_accounts:/var/lib/postgresql/data ]
+
+  postgres-transactions:
+    image: postgres:16-alpine
+    container_name: transactions_db
+    environment:
+      POSTGRES_DB: transactions_db
+      POSTGRES_USER: ${DB_USER:?Define DB_USER in .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD in .env}
+    ports: [ "5434:5432" ]
+    volumes: [ pgdata_transactions:/var/lib/postgresql/data ]
+
+  postgres-notifications:
+    image: postgres:16-alpine
+    container_name: notifications_db
+    environment:
+      POSTGRES_DB: notifications_db
+      POSTGRES_USER: ${DB_USER:?Define DB_USER in .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD in .env}
+    ports: [ "5435:5432" ]
+    volumes: [ pgdata_notifications:/var/lib/postgresql/data ]
+
+  postgres-fraud:
+    image: postgres:16-alpine
+    container_name: fraud_db
+    environment:
+      POSTGRES_DB: fraud_db
+      POSTGRES_USER: ${DB_USER:?Define DB_USER in .env}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD in .env}
+    ports: [ "5436:5432" ]
+    volumes: [ pgdata_fraud:/var/lib/postgresql/data ]
+
+  # --- KAFKA & UI ---
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    depends_on: [ zookeeper ]
+    ports: [ "9092:9092" ]
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafka-ui:
+    image: provectuslabs/kafka-ui:v0.7.2
+    container_name: kafka-ui
+    depends_on: [ kafka ]
+    ports: [ "8085:8080" ]
+    environment:
+      KAFKA_CLUSTERS_0_NAME: local
+      KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
+
+volumes:
+  pgdata_accounts:
+  pgdata_transactions:
+  pgdata_notifications:
+  pgdata_fraud:
