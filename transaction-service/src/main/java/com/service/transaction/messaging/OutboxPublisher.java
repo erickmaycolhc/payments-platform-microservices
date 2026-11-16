@@ -26,8 +26,8 @@ public class OutboxPublisher {
     private static final String SOURCE = "transaction-service";
 
     private final OutboxEventRepository outboxEventRepository;
-    private final KafkaTemplate<String, String> kafkaTemplate;
     private final JsonMapper jsonMapper;
+    private final KafkaTemplate<String, String> kafkaTemplate;
 
     @Scheduled(fixedDelay = 2000)
     public void publishPendingEvents() { // public event in kafka
@@ -56,14 +56,16 @@ public class OutboxPublisher {
                 event.getEventType(),
                 event.getCreatedAt().toString(),
                 event.getAggregateId().toString(),
-                jsonMapper.readTree(event.getPayload()));
+                jsonMapper.readTree(event.getPayload())
+        );
 
         ProducerRecord<String, String> record = new ProducerRecord<>(
                 TOPIC,
                 event.getAggregateId().toString(),
-                jsonMapper.writeValueAsString(envelope));
-        record.headers().add("eventType", event.getEventType().getBytes(StandardCharsets.UTF_8));
+                jsonMapper.writeValueAsString(envelope)
+        );
 
+        record.headers().add("eventType", event.getEventType().getBytes(StandardCharsets.UTF_8));
         kafkaTemplate.send(record).get(10, TimeUnit.SECONDS);
     }
 }
