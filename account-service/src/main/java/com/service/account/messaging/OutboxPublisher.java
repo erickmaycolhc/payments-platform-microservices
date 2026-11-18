@@ -21,7 +21,7 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class OutboxPublisher {
 
-    private final static String TOPIC = "account.event";
+    private final static String TOPIC = "account.events";
     private final static String SOURCE= "account-service";
 
     private final OutboxEventRepository outboxEventRepository;

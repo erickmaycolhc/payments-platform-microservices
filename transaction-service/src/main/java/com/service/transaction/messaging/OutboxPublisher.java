@@ -66,6 +66,7 @@ public class OutboxPublisher {
         );
 
         record.headers().add("eventType", event.getEventType().getBytes(StandardCharsets.UTF_8));
+
         kafkaTemplate.send(record).get(10, TimeUnit.SECONDS);
     }
 }

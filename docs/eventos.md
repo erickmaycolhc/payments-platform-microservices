@@ -49,7 +49,7 @@ Contrato de comunicación asíncrona entre los servicios. Se actualiza cada vez 
 | Topic | Particiones | Eventos | Estado |
 |---|---|---|---|
 | `transfer.events` | 3 | `TransferInitiated`, `TransferCompleted`, `TransferFailed` | Creado |
-| `account.events` | por definir | `FundsMoved`, `FundsFailed` | Borrador |
+| `account.events` | 3 | `FundsMoved`, `FundsFailed` | Creado |
 | `fraud.events` | por definir | `FraudCheckApproved`, `FraudCheckRejected` | Borrador |
 
 ---
@@ -59,10 +59,10 @@ Contrato de comunicación asíncrona entre los servicios. Se actualiza cada vez 
 | Evento | Topic | Publica | Consumen | Estado |
 |---|---|---|---|---|
 | `TransferInitiated` | `transfer.events` | transaction-service | account-service, notification-service (y fraud-service desde el Paso 7) | Implementado |
-| `FundsMoved` | `account.events` | account-service | transaction-service | Borrador |
-| `FundsFailed` | `account.events` | account-service | transaction-service | Borrador |
-| `TransferCompleted` | `transfer.events` | transaction-service | notification-service | Borrador |
-| `TransferFailed` | `transfer.events` | transaction-service | notification-service | Borrador |
+| `FundsMoved` | `account.events` | account-service | transaction-service | Implementado |
+| `FundsFailed` | `account.events` | account-service | transaction-service | Implementado |
+| `TransferCompleted` | `transfer.events` | transaction-service | notification-service | Implementado |
+| `TransferFailed` | `transfer.events` | transaction-service | notification-service | Implementado |
 | `FraudCheckApproved` | `fraud.events` | fraud-service | transaction-service, account-service | Borrador |
 | `FraudCheckRejected` | `fraud.events` | fraud-service | transaction-service | Borrador |
 
@@ -104,7 +104,7 @@ Se publica cuando se crea una transferencia en estado `PENDING`. El evento se gu
 
 ---
 
-### FundsMoved — `Borrador`
+### FundsMoved — `Implementado`
 
 Se publica cuando `account-service` debita la cuenta origen y acredita la destino, en una sola transacción local.
 
@@ -118,7 +118,7 @@ Se publica cuando `account-service` debita la cuenta origen y acredita la destin
 
 **Efecto en `transaction-service`:** la transferencia pasa a `COMPLETED`, se registra en el historial y se publica `TransferCompleted`.
 
-### FundsFailed — `Borrador`
+### FundsFailed — `Implementado`
 
 Se publica cuando no se pudo mover el dinero (cuenta inexistente, cuenta inactiva, saldo insuficiente o moneda distinta).
 
@@ -129,7 +129,7 @@ Se publica cuando no se pudo mover el dinero (cuenta inexistente, cuenta inactiv
 
 **Efecto en `transaction-service`:** la transferencia pasa a `FAILED` con `failureReason` y se publica `TransferFailed`.
 
-### TransferCompleted — `Borrador`
+### TransferCompleted — `Implementado`
 
 | Campo del payload | Tipo |
 |---|---|
@@ -139,7 +139,7 @@ Se publica cuando no se pudo mover el dinero (cuenta inexistente, cuenta inactiv
 | `amount` | `Number` |
 | `currency` | `String` |
 
-### TransferFailed — `Borrador`
+### TransferFailed — `Implementado`
 
 | Campo del payload | Tipo |
 |---|---|
@@ -167,5 +167,5 @@ Se publica cuando no se pudo mover el dinero (cuenta inexistente, cuenta inactiv
 ## 6. Pendientes
 
 - [ ] `occurredAt` sin zona horaria: pasar a UTC (`Instant`) más adelante.
-- [ ] Definir particiones de `account.events` y `fraud.events`.
+- [ ] Definir particiones de `fraud.events`.
 - [ ] Evaluar validación de esquemas (JSON Schema o schema registry).

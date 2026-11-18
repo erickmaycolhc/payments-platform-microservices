@@ -185,8 +185,8 @@ En la carpeta de cada servicio:
 - [x] **Paso 1:** `account-service` (clientes, cuentas, depósitos y movimientos)
 - [x] **Paso 2:** infraestructura local (PostgreSQL, Kafka y Kafka UI con Docker Compose)
 - [x] **Paso 3:** `transaction-service` con Outbox y publicación de `TransferInitiated`
-- [ ] **Paso 4:** `account-service` consume `TransferInitiated`, mueve los fondos y publica `FundsMoved` / `FundsFailed`
-- [ ] **Paso 5:** idempotencia en los consumidores (`processed_message`)
+- [x] **Paso 4:** `account-service` consume `TransferInitiated`, mueve los fondos y publica `FundsMoved` / `FundsFailed`
+- [x] **Paso 5:** idempotencia en los consumidores (`processed_message`)
 - [ ] **Paso 6:** `notification-service` reactivo (SSE)
 - [ ] **Paso 7:** `fraud-service`
 - [ ] **Paso 8:** API Gateway, Eureka y seguridad (JWT con Keycloak)
