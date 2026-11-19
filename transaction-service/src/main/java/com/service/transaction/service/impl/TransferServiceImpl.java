@@ -22,6 +22,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -42,6 +43,9 @@ public class TransferServiceImpl implements TransferService {
         Optional<TransferEntity> existing = transferRepository.findByIdempotencyKey(idempotencyKey);
 
         if(existing.isPresent()){
+            if(!matches(existing.get(), request)){
+                throw new BusinessRuleException("Idempotency-key was already used with a different request");
+            }
             return TransferResponse.fromEntity(existing.get());
         }
 
@@ -118,5 +122,13 @@ public class TransferServiceImpl implements TransferService {
                 .payload(jsonMapper.writeValueAsString(payload))
                 .createdAt(createdAt)
                 .build());
+    }
+
+    private boolean matches(TransferEntity existing, TransferRequest request) {
+        return existing.getSourceAccount().equals(request.sourceAccount())
+                && existing.getTargetAccount().equals(request.targetAccount())
+                && existing.getAmount().compareTo(request.amount()) == 0
+                && existing.getCurrency().equals(request.currency())
+                && Objects.equals(existing.getDescription(), request.description());
     }
 }

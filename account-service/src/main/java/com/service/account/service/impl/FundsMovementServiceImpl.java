@@ -37,6 +37,7 @@ public class FundsMovementServiceImpl implements FundsMovementService {
 
         if(processedMessageRepository.existsById(eventId)) {
             log.info("Event {} already processed, skipping", eventId);
+            return;
         }
 
         AccountEntity source = accountRepository.findByAccountNumber(payload.sourceAccount()).orElse(null);
