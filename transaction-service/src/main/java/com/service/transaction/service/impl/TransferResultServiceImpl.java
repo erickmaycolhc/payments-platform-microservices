@@ -77,6 +77,10 @@ public class TransferResultServiceImpl implements TransferResultService {
                 "TransferFailed",
                 new TransferFailedPayload(
                         transfer.getId(),
+                        transfer.getSourceAccount(),
+                        transfer.getTargetAccount(),
+                        transfer.getAmount(),
+                        transfer.getCurrency(),
                         payload.reason()
                 ),
                 now

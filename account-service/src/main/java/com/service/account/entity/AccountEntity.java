@@ -3,7 +3,6 @@ package com.service.account.entity;
 import com.service.account.enums.AccountStatus;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
